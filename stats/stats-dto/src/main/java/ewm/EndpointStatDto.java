@@ -1,5 +1,6 @@
 package ewm;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import lombok.Data;
  */
 @Builder(toBuilder = true)
 @Data
+@AllArgsConstructor
 public class EndpointStatDto {
     /**
      * Идентификатор сервиса, в который был отправлен запрос.
@@ -22,5 +24,5 @@ public class EndpointStatDto {
     /**
      * Количество запросов.
      */
-    private final int hits;
+    private final Long hits;
 }
