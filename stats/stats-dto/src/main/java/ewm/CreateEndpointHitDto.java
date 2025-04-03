@@ -1,6 +1,6 @@
 package ewm;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -11,24 +11,24 @@ public class CreateEndpointHitDto {
     /**
      * Идентификатор сервиса, в который был отправлен запрос.
      */
-    @NotNull
+    @NotBlank
     private final String app;
 
     /**
      * Адрес запроса.
      */
-    @NotNull
+    @NotBlank
     private final String uri;
 
     /**
      * IP-адрес пользователя, сделавшего запрос.
      */
-    @NotNull
+    @NotBlank
     private final String ip;
 
     /**
      * Дата и время, когда был совершен запрос в формате "yyyy-MM-dd HH:mm:ss".
      */
-    @NotNull
+    @NotBlank
     private final String timestamp;
 }
