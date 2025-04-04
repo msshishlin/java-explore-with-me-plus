@@ -11,24 +11,24 @@ public class CreateEndpointHitDto {
     /**
      * Идентификатор сервиса, в который был отправлен запрос.
      */
-    @NotBlank
+    @NotBlank(message = "Идентификатор сервиса не может быть пустым")
     private final String app;
 
     /**
      * Адрес запроса.
      */
-    @NotBlank
+    @NotBlank(message = "Адрес запроса не может быть пустым")
     private final String uri;
 
     /**
      * IP-адрес пользователя, сделавшего запрос.
      */
-    @NotBlank
+    @NotBlank(message = "IP-адрес пользователя не может быть пустым")
     private final String ip;
 
     /**
      * Дата и время, когда был совершен запрос в формате "yyyy-MM-dd HH:mm:ss".
      */
-    @NotBlank
+    @NotBlank(message = "Дата и время, когда был совершен запрос, не может быть пустой")
     private final String timestamp;
 }
