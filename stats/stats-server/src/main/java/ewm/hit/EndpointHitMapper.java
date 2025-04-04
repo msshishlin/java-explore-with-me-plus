@@ -15,9 +15,10 @@ import java.net.UnknownHostException;
 public interface EndpointHitMapper {
     EndpointHitMapper INSTANCE = Mappers.getMapper(EndpointHitMapper.class);
 
+
     @Mapping(source = "ip", target = "ip", qualifiedByName = "ipToString")
     @Mapping(source = "timestamp", target = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    EndpointHitDto toEndpointStatDto(EndpointHit endpointHit);
+    EndpointHitDto toEndpointHitDto(EndpointHit endpointHit);
 
     @Mapping(source = "ip", target = "ip", qualifiedByName = "stringToIp")
     @Mapping(source = "timestamp", target = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss")

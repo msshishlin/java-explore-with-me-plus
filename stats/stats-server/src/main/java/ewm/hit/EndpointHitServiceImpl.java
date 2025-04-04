@@ -1,22 +1,26 @@
 package ewm.hit;
 
 import ewm.CreateEndpointHitDto;
+import ewm.EndpointHitDto;
 import ewm.EndpointStatDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class EndpointHitServiceImpl implements EndpointHitService {
     private final EndpointHitRepository endpointHitRepository;
 
     @Override
-    public void createEndpointHit(CreateEndpointHitDto createEndpointHitDto) {
+    @Transactional
+    public EndpointHitDto createEndpointHit(CreateEndpointHitDto createEndpointHitDto) {
         EndpointHit endpointHit = EndpointHitMapper.INSTANCE.toEndpointHit(createEndpointHitDto);
-        endpointHitRepository.save(endpointHit);
+        return EndpointHitMapper.INSTANCE.toEndpointHitDto(endpointHitRepository.save(endpointHit));
     }
 
     @Override
