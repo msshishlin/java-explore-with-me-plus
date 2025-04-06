@@ -1,40 +1,40 @@
 package ewm.client;
 
-import ewm.EndpointHitDto;
+import ewm.CreateEndpointHitDto;
 import ewm.EndpointStatDto;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StatsClient {
     private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:9090").build();
 
-    public Mono<Void> sendHit(EndpointHitDto hitDto) {
+    public Mono<ResponseEntity<Void>> sendHit(CreateEndpointHitDto createEndpointHitDto) {
         return webClient.post()
                 .uri("/hit")
-                .bodyValue(hitDto)
+                .bodyValue(createEndpointHitDto)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .toEntity(Void.class);
     }
 
-    public Mono<List<EndpointStatDto>> getStats(String start, String end, List<String> uris, boolean unique) {
+    public Mono<ResponseEntity<List<EndpointStatDto>>> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+        String strStart = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String strEnd = end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/stats")
-                        .queryParam("start", start)
-                        .queryParam("end", end)
-                        .queryParam("uris",
-                                Optional.ofNullable(uris)
-                                        .filter(list -> list.isEmpty())
-                                        .map(list -> String.join(",", list)))
+                        .queryParam("start", strStart)
+                        .queryParam("end", strEnd)
+                        .queryParam("uris", uris)
                         .queryParam("unique", unique)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<EndpointStatDto>>() {
-                });
+                .toEntityList(EndpointStatDto.class);
     }
 }
