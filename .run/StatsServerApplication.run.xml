@@ -4,7 +4,7 @@
     <module name="stats-server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="ewm.*" />
+        <option name="PATTERN" value="client.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
