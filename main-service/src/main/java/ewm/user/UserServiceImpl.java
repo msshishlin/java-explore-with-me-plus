@@ -1,8 +1,9 @@
 package ewm.user;
 
 import ewm.exception.NotFoundException;
+import ewm.pageble.PageOffset;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, int from, int size) {
-        PageRequest pageRequest = PageRequest.of(from / size, size);
+        Pageable pageRequest = PageOffset.of(from, size);
         List<User> users;
         if (ids != null && !ids.isEmpty()) {
             users = userRepository.findAllById(ids);
