@@ -21,9 +21,9 @@ public class AdminUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody @Valid CreateUserDto createUserDto) {
-        log.info("Вызван метод POST /admin/users с телом запроса {}", createUserDto);
+        log.debug("Вызван метод POST /admin/users с телом запроса {}", createUserDto);
         UserDto userDto = userService.createUser(createUserDto);
-        log.info("Метод POST /admin/users успешно выполнен");
+        log.debug("Метод POST /admin/users успешно выполнен");
         return userDto;
     }
 
@@ -31,17 +31,17 @@ public class AdminUserController {
     public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
                                   @RequestParam(defaultValue = "0") @Min(0) int from,
                                   @RequestParam(defaultValue = "10") @Min(1) int size) {
-        log.info("Вызван метод GET /admin/users с параметрами ids: {}, from: {}, size: {}", ids, from, size);
+        log.debug("Вызван метод GET /admin/users с параметрами ids: {}, from: {}, size: {}", ids, from, size);
         List<UserDto> userDtos = userService.getUsers(ids, from, size);
-        log.info("Метод GET /admin/users успешно выполнен");
+        log.debug("Метод GET /admin/users успешно выполнен");
         return userDtos;
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
-        log.info("Вызван метод DELETE /admin/users/{}", id);
+        log.debug("Вызван метод DELETE /admin/users/{}", id);
         userService.deleteUser(id);
-        log.info("Метод DELETE /admin/users/{} успешно выполнен", id);
+        log.debug("Метод DELETE /admin/users/{} успешно выполнен", id);
     }
 }

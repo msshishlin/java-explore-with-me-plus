@@ -11,7 +11,7 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    User toUserFromCreateUserDto(CreateUserDto createUserDto);
+    User toUser(CreateUserDto createUserDto);
 
     UserDto toUserDto(User user);
 
