@@ -1,39 +1,62 @@
 package ewm.user;
 
 import ewm.exception.NotFoundException;
-import ewm.pageble.PageOffset;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
-@Service
+/**
+ * Сервис для сущности "Пользователь".
+ */
 @RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
+    /**
+     * Хранилище данных для сущности "Пользователь".
+     */
     private final UserRepository userRepository;
 
+    /**
+     * Добавить нового пользователя.
+     *
+     * @param createUserDto трансферный объект, содержащий информацию, необходимую для добавления нового пользователя.
+     * @return новый пользователь.
+     */
     @Override
     public UserDto createUser(CreateUserDto createUserDto) {
-        User user = UserMapper.INSTANCE.toUser(createUserDto);
-        return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
+        return UserMapper.INSTANCE.toUserDto(userRepository.save(UserMapper.INSTANCE.toUser(createUserDto)));
     }
 
+    /**
+     * Получить коллекцию пользователей.
+     *
+     * @param userIds коллекция идентификаторов пользователей, которых надо получить.
+     * @param from    количество пользователей, которое необходимо пропустить.
+     * @param size    количество пользователей, которое необходимо получить.
+     * @return коллекция пользователей.
+     */
     @Override
-    public List<UserDto> getUsers(List<Long> ids, int from, int size) {
-        Pageable pageRequest = PageOffset.of(from, size);
-        List<User> users;
-        if (ids != null && !ids.isEmpty()) {
-            users = userRepository.findAllById(ids);
-        } else {
-            users = userRepository.findAll(pageRequest).getContent();
+    public Collection<UserDto> getUsers(Collection<Long> userIds, int from, int size) {
+        if (userIds != null && !userIds.isEmpty()) {
+            return UserMapper.INSTANCE.toUserDtoCollection(userRepository.findAllById(userIds));
         }
-        return UserMapper.INSTANCE.toListUserDto(users);
+
+        return UserMapper.INSTANCE.toUserDtoCollection(userRepository.findAll(PageRequest.of(from, size)).getContent());
     }
 
+    /**
+     * Удалить пользователя.
+     *
+     * @param userId идентификатор пользователя.
+     */
     @Override
-    public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Не найден пользователь с id: " + id));
-        userRepository.deleteById(id);
+    public void deleteUser(long userId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new NotFoundException(String.format("Пользователь с id = %d не найден", userId));
+        }
+
+        userRepository.deleteById(userId);
     }
 }

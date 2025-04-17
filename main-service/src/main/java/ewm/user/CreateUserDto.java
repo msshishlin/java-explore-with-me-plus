@@ -6,17 +6,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-@Data
+/**
+ * Трансферный объект, содержащий информацию, необходимую для добавления нового пользователя.
+ */
 @AllArgsConstructor
+@Data
 public class CreateUserDto {
-    @NotBlank(message = "Имя пользователя не может быть пустым")
+    /**
+     * Имя пользователя.
+     */
     @Length(min = 2, message = "Имя пользователя не может быть меньше 2 символов")
     @Length(max = 250, message = "Имя пользователя не может быть больше 250 символов")
+    @NotBlank(message = "Имя пользователя не может быть пустым")
     private String name;
 
-    @NotBlank(message = "Email пользователя не может быть пустым")
+    /**
+     * Адрес электронной почты пользователя.
+     */
     @Email(message = "Email пользователя должен корректным")
     @Length(min = 6, message = "Email пользователя не может быть меньше 6 символов")
     @Length(max = 254, message = "Email пользователя не может быть больше 254 символов")
+    @NotBlank(message = "Email пользователя не может быть пустым")
     private String email;
 }

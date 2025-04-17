@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.UnknownHostException;
-import java.util.Optional;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +48,7 @@ public class UserServiceTest {
         User user2 = new User(3L, "User2", "user2@mail.com");
         userRepository.saveAll(Arrays.asList(user1, user2));
 
-        List<UserDto> usersDto = userService.getUsers(null, 0, 1);
+        Collection<UserDto> usersDto = userService.getUsers(null, 0, 1);
 
         assertNotNull(usersDto);
         assertEquals(1, usersDto.size());
@@ -61,7 +61,7 @@ public class UserServiceTest {
         User user2 = new User(3L, "User2", "user2@mail.com");
         userRepository.saveAll(Arrays.asList(user1, user2));
 
-        List<UserDto> usersDto = userService.getUsers(null, 0, 1);
+        Collection<UserDto> usersDto = userService.getUsers(null, 0, 1);
 
         assertNotNull(usersDto);
         assertEquals(1, usersDto.size());
