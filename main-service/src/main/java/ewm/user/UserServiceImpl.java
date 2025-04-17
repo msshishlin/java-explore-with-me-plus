@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Добавить нового пользователя.
      *
-     * @param createUserDto трансферный объект, содержащий информацию, необходимую для добавления нового пользователя.
+     * @param createUserDto трансферный объект, содержащий данные для добавления нового пользователя.
      * @return новый пользователь.
      */
     @Override

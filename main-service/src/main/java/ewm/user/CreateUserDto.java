@@ -7,7 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * Трансферный объект, содержащий информацию, необходимую для добавления нового пользователя.
+ * Трансферный объект, содержащий данные для добавления нового пользователя.
  */
 @AllArgsConstructor
 @Data

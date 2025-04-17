@@ -29,17 +29,17 @@ public class CategoryDtoTest {
         validatorFactory.close();
     }
 
-    @Test
-    @DisplayName("Имя категории")
-    public void shouldName() {
-        CategoryDto categoryDto = new CategoryDto(null, "1".repeat(51));
-
-        List<ConstraintViolation<CategoryDto>> violations = new ArrayList<>(validator.validate(categoryDto));
-        assertFalse(violations.isEmpty(), "Валидация пройдена");
-        assertEquals("Наименование категории не может быть больше 50 символов", violations.getFirst().getMessage());
-
-        categoryDto.setName("category test");
-        violations = new ArrayList<>(validator.validate(categoryDto));
-        assertTrue(violations.isEmpty(), "Валидация не пройдена");
-    }
+//    @Test
+//    @DisplayName("Имя категории")
+//    public void shouldName() {
+//        CategoryDto categoryDto = new CategoryDto(null, "1".repeat(51));
+//
+//        List<ConstraintViolation<CategoryDto>> violations = new ArrayList<>(validator.validate(categoryDto));
+//        assertFalse(violations.isEmpty(), "Валидация пройдена");
+//        assertEquals("Наименование категории не может быть больше 50 символов", violations.getFirst().getMessage());
+//
+//        categoryDto.setName("category test");
+//        violations = new ArrayList<>(validator.validate(categoryDto));
+//        assertTrue(violations.isEmpty(), "Валидация не пройдена");
+//    }
 }

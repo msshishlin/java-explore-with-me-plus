@@ -3,16 +3,21 @@ package ewm.category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
-@Data
-@Builder(toBuilder = true)
-@NoArgsConstructor
+/**
+ * Трансферный объект, содержащий данные о категории.
+ */
 @AllArgsConstructor
+@Builder(toBuilder = true)
+@Data
 public class CategoryDto {
-    private Long id;
+    /**
+     * Уникальный идентификатор категории.
+     */
+    private long id;
 
-    @Length(max = 50, message = "Наименование категории не может быть больше 50 символов")
+    /**
+     * Название категории.
+     */
     private String name;
 }

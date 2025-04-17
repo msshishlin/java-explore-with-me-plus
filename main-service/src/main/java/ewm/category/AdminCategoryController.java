@@ -13,32 +13,45 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/admin/categories")
 @RequiredArgsConstructor
 public class AdminCategoryController {
-    private final AdminCategoryService adminCategoryService;
+    /**
+     * Сервис для сущности "Категория".
+     */
+    private final CategoryService categoryService;
 
+    /**
+     * Добавить новую категорию.
+     *
+     * @param createCategoryDto трансферный объект, содержащий данные для добавления новой категории.
+     * @return трансферный объект, содержащий данные о категории.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
-        log.debug("Вызван метод POST /admin/categories с телом {}", newCategoryDto);
-        CategoryDto categoryDto = adminCategoryService.createCategory(newCategoryDto);
-        log.debug("Метод POST /admin/categories вернул ответ {}", categoryDto);
-        return categoryDto;
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
+        return categoryService.createCategory(createCategoryDto);
     }
 
+    /**
+     * Обновить категорию.
+     *
+     * @param categoryId        идентификатор категории.
+     * @param updateCategoryDto трансферный объект, содержащий данные для обновления категории.
+     * @return трансферный объект, содержащий данные о категории.
+     */
     @PatchMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PathVariable("catId") Long categoryId,
-                                      @RequestBody @Valid CategoryDto categoryDto) {
-        log.debug("Вызван метод PATCH /admin/categories/{} с телом {}", categoryId, categoryDto);
-        CategoryDto updateCategoryDto = adminCategoryService.updateCategory(categoryId, categoryDto);
-        log.debug("Метод PATCH /admin/categories/{} вернул ответ {}", categoryId, updateCategoryDto);
-        return updateCategoryDto;
+                                      @RequestBody @Valid UpdateCategoryDto updateCategoryDto) {
+        return categoryService.updateCategory(categoryId, updateCategoryDto);
     }
 
-    @DeleteMapping("/{catId}")
+    /**
+     * Удалить категорию.
+     *
+     * @param categoryId идентификатор категории.
+     */
+    @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable("catId") Long categoryId) {
-        log.debug("Вызван метод DELETE /admin/categories/{}", categoryId);
-        adminCategoryService.deleteCategory(categoryId);
-        log.debug("Метод DELETE /admin/categories/{} успешно выполнен", categoryId);
+    public void deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
     }
 }

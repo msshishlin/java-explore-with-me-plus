@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 COMMENT ON TABLE categories IS 'Содержит информацию о категориях';
 COMMENT ON COLUMN categories.id IS 'Уникальный идентификатор категории';
-COMMENT ON COLUMN categories.name IS 'Наименование категории';
+COMMENT ON COLUMN categories.name IS 'Название категории';

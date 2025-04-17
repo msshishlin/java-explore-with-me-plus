@@ -3,7 +3,6 @@ package ewm.user;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.List;
 
-@Slf4j
-@Validated
-@RestController
-@RequiredArgsConstructor
+/**
+ * Контроллер для доступа к админской части API пользователей.
+ */
 @RequestMapping("/admin/users")
+@RequiredArgsConstructor
+@RestController
+@Validated
 public class AdminUserController {
     /**
      * Сервис для сущности "Пользователь".
@@ -25,7 +26,7 @@ public class AdminUserController {
     /**
      * Добавить нового пользователя.
      *
-     * @param createUserDto трансферный объект, содержащий информацию, необходимую для добавления нового пользователя.
+     * @param createUserDto трансферный объект, содержащий данные для добавления нового пользователя.
      * @return новый пользователь.
      */
     @PostMapping
