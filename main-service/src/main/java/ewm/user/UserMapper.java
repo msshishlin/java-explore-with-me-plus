@@ -23,6 +23,8 @@ public interface UserMapper {
      * @return объект пользователя.
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", expression = "java(createUserDto.getName() != null ? createUserDto.getName().trim() : null)")
+    @Mapping(target = "email", expression = "java(createUserDto.getEmail() != null ? createUserDto.getEmail().trim() : null)")
     User toUser(CreateUserDto createUserDto);
 
     /**

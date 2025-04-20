@@ -1,8 +1,8 @@
 package ewm.user;
 
 import ewm.exception.NotFoundException;
+import ewm.pageble.PageOffset;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
             return UserMapper.INSTANCE.toUserDtoCollection(userRepository.findAllById(userIds));
         }
 
-        return UserMapper.INSTANCE.toUserDtoCollection(userRepository.findAll(PageRequest.of(from, size)).getContent());
+        return UserMapper.INSTANCE.toUserDtoCollection(userRepository.findAll(PageOffset.of(from, size)).getContent());
     }
 
     /**

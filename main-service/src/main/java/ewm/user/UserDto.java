@@ -12,7 +12,7 @@ public class UserDto {
     /**
      * Уникальный идентификатор пользователя.
      */
-    private long id;
+    private Long id;
 
     /**
      * Имя пользователя.

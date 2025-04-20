@@ -314,7 +314,7 @@ public class AdminUserControllerTest {
                 });
     }
 
-    @DisplayName("Запрос на создание пользователя со некорректным адресом электронной почты")
+    @DisplayName("Запрос на создание пользователя с некорректным адресом электронной почты")
     @SneakyThrows
     @Test
     public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenEmailIsIncorrect() {
@@ -384,7 +384,7 @@ public class AdminUserControllerTest {
     public void shouldGetUsers() {
         List<UserDto> users = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (long i = 0; i < 10; i++) {
             Faker faker = new Faker();
 
             users.add(UserDto.builder()
