@@ -9,6 +9,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,7 +24,38 @@ import java.util.List;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleConstraintViolation(final ConstraintViolationException e) {
+    public ApiError handleConstraintViolation(final ConstraintViolationException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Incorrectly made request.")
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleHttpMessageNotReadable(final HttpMessageNotReadableException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Incorrectly made request.")
+                .message("Error request body")
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Incorrectly made request.")
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException e) {
+        log.warn(e.getMessage());
         return new ApiError(
                 HttpStatus.BAD_REQUEST.name(),
                 "Incorrectly made request.",
@@ -45,28 +77,6 @@ public class ErrorHandler {
                 .reason("Incorrectly made request.")
                 .message(StringUtils.join(errors, ';'))
                 .build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException e) {
-        log.warn(e.getMessage());
-        return new ApiError(
-                HttpStatus.BAD_REQUEST.name(),
-                "Incorrectly made request.",
-                e.getMessage(),
-                null);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleHttpMessageNotReadable(final HttpMessageNotReadableException e) {
-        log.warn(e.getMessage());
-        return new ApiError(
-                HttpStatus.BAD_REQUEST.name(),
-                "Incorrectly made request.",
-                "Error request body",
-                null);
     }
 
     @ExceptionHandler

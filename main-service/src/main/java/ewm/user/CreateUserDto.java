@@ -2,15 +2,19 @@ package ewm.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
  * Трансферный объект, содержащий данные для добавления нового пользователя.
  */
+@AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
+@NoArgsConstructor
 public class CreateUserDto {
     /**
      * Имя пользователя.

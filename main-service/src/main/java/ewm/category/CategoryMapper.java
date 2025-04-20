@@ -1,6 +1,7 @@
 package ewm.category;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Collection;
@@ -21,6 +22,8 @@ public interface CategoryMapper {
      * @param createCategoryDto трансферный объект, содержащий данные для добавления новой категории.
      * @return объект категории.
      */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", expression = "java(createCategoryDto.getName() != null ? createCategoryDto.getName().trim() : null)")
     Category toCategory(CreateCategoryDto createCategoryDto);
 
     /**
@@ -29,6 +32,8 @@ public interface CategoryMapper {
      * @param updateCategoryDto трансферный объект, содержащий данные для обновления категории.
      * @return объект категории.
      */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", expression = "java(updateCategoryDto.getName() != null ? updateCategoryDto.getName().trim() : null)")
     Category toCategory(UpdateCategoryDto updateCategoryDto);
 
     /**

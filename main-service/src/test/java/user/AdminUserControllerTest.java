@@ -3,25 +3,25 @@ package user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import ewm.MainServiceApplication;
 import ewm.user.AdminUserController;
 import ewm.user.CreateUserDto;
 import ewm.user.UserDto;
 import ewm.user.UserService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,31 +31,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
+@ContextConfiguration(classes = {MainServiceApplication.class})
+@WebMvcTest(controllers = AdminUserController.class)
 public class AdminUserControllerTest {
-    @Mock
-    UserService userService;
-
-    @InjectMocks
-    private AdminUserController adminUserController;
-
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(adminUserController).build();
-        objectMapper = new ObjectMapper();
-    }
+    @MockBean
+    UserService userService;
 
     @DisplayName("Запрос на создание пользователя без тела запроса")
     @SneakyThrows
@@ -67,7 +61,11 @@ public class AdminUserControllerTest {
                 .andExpect(result -> {
                     assertInstanceOf(HttpMessageNotReadableException.class, result.getResolvedException());
                     assertEquals("Required request body is missing: public ewm.user.UserDto ewm.user.AdminUserController.createUser(ewm.user.CreateUserDto)", result.getResolvedException().getMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Error request body")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя без имени")
@@ -96,7 +94,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("name"));
 
                     assertEquals("Имя пользователя не может быть пустым", Objects.requireNonNull(bindingResult.getFieldError("name")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Имя пользователя не может быть пустым")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя с пустым именем")
@@ -128,7 +130,12 @@ public class AdminUserControllerTest {
                     Collection<String> nameErrors = bindingResult.getFieldErrors("name").stream().map(FieldError::getDefaultMessage).toList();
                     assertTrue(nameErrors.contains("Имя пользователя не может быть пустым"));
                     assertTrue(nameErrors.contains("Имя пользователя не может быть меньше 2 символов"));
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", containsString("Имя пользователя не может быть пустым")))
+                .andExpect(jsonPath("$.message", containsString("Имя пользователя не может быть меньше 2 символов")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя со слишком коротким именем")
@@ -158,7 +165,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("name"));
 
                     assertEquals("Имя пользователя не может быть меньше 2 символов", Objects.requireNonNull(bindingResult.getFieldError("name")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Имя пользователя не может быть меньше 2 символов")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя со слишком длинным именем")
@@ -188,7 +199,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("name"));
 
                     assertEquals("Имя пользователя не может быть больше 100 символов", Objects.requireNonNull(bindingResult.getFieldError("name")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Имя пользователя не может быть больше 100 символов")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя без адреса электронной почты")
@@ -217,7 +232,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("email"));
 
                     assertEquals("Email пользователя не может быть пустым", Objects.requireNonNull(bindingResult.getFieldError("email")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Email пользователя не может быть пустым")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
 
@@ -251,7 +270,13 @@ public class AdminUserControllerTest {
                     assertTrue(emailErrors.contains("Email пользователя не может быть пустым"));
                     assertTrue(emailErrors.contains("Email пользователя не может быть меньше 6 символов"));
                     assertTrue(emailErrors.contains("Email пользователя должен корректным"));
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", containsString("Email пользователя не может быть пустым")))
+                .andExpect(jsonPath("$.message", containsString("Email пользователя не может быть меньше 6 символов")))
+                .andExpect(jsonPath("$.message", containsString("Email пользователя должен корректным")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя со слишком коротким адресом электронной почты")
@@ -281,7 +306,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("email"));
 
                     assertEquals("Email пользователя не может быть меньше 6 символов", Objects.requireNonNull(bindingResult.getFieldError("email")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Email пользователя не может быть меньше 6 символов")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя со слишком длинным адресом электронной почты")
@@ -311,7 +340,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("email"));
 
                     assertEquals("Email пользователя должен корректным", Objects.requireNonNull(bindingResult.getFieldError("email")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Email пользователя должен корректным")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя с некорректным адресом электронной почты")
@@ -341,7 +374,11 @@ public class AdminUserControllerTest {
                     assertEquals(1, bindingResult.getFieldErrorCount("email"));
 
                     assertEquals("Email пользователя должен корректным", Objects.requireNonNull(bindingResult.getFieldError("email")).getDefaultMessage());
-                });
+                })
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
+                .andExpect(jsonPath("$.message", is("Email пользователя должен корректным")))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @DisplayName("Запрос на создание пользователя с валидным телом запроса")
@@ -357,8 +394,8 @@ public class AdminUserControllerTest {
 
         UserDto userDto = UserDto.builder()
                 .id(1L)
-                .name(faker.name().fullName())
-                .email(faker.internet().emailAddress())
+                .name(createUserDto.getName())
+                .email(createUserDto.getEmail())
                 .build();
 
         when(userService.createUser(createUserDto)).thenReturn(userDto);
