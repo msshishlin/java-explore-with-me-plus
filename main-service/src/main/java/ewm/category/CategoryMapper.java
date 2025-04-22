@@ -50,5 +50,5 @@ public interface CategoryMapper {
      * @param categories коллекцию объектов категорий.
      * @return коллекция трансферных объектов, содержащих информацию о категориях.
      */
-    Collection<CategoryDto> toCategoryDtoList(Collection<Category> categories);
+    Collection<CategoryDto> toCategoryDtoCollection(Collection<Category> categories);
 }

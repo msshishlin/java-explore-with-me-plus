@@ -1,13 +1,9 @@
-package user;
+package ewm.user;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import ewm.MainServiceApplication;
-import ewm.user.AdminUserController;
-import ewm.user.CreateUserDto;
-import ewm.user.UserDto;
-import ewm.user.UserService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;

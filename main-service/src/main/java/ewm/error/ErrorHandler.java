@@ -1,5 +1,6 @@
 package ewm.error;
 
+import ewm.exception.ForbiddenException;
 import ewm.exception.NotFoundException;
 import ewm.exception.UnknownIpException;
 import jakarta.validation.ConstraintViolationException;
@@ -114,13 +115,22 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFound(final NotFoundException e) {
-        log.warn(e.getMessage());
-        return new ApiError(
-                HttpStatus.NOT_FOUND.name(),
-                "The required object was not found.",
-                e.getMessage(),
-                null);
+    public ApiError handleNotFoundException(final NotFoundException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.NOT_FOUND.name())
+                .reason("The required object was not found.")
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleForbiddenException(final ForbiddenException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.FORBIDDEN.name())
+                .reason("For the requested operation the conditions are not met.")
+                .message(ex.getMessage())
+                .build();
     }
 
     @ExceptionHandler

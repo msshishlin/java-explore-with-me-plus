@@ -1,9 +1,8 @@
-package user;
+package ewm.user;
 
 import com.github.javafaker.Faker;
 import ewm.MainServiceApplication;
 import ewm.exception.NotFoundException;
-import ewm.user.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

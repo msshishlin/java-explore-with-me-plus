@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Collection<CategoryDto> getCategories(int from, int size) {
-        return CategoryMapper.INSTANCE.toCategoryDtoList(categoryRepository.findAll(PageOffset.of(from, size, Sort.by("id").ascending())).getContent());
+        return CategoryMapper.INSTANCE.toCategoryDtoCollection(categoryRepository.findAll(PageOffset.of(from, size, Sort.by("id").ascending())).getContent());
     }
 
     /**
