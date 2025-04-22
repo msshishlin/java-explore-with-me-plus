@@ -3,17 +3,28 @@ package ewm.category;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "categories")
-@Getter
-@Setter
-@ToString
-@Builder(toBuilder = true)
+/**
+ * Категория.
+ */
 @AllArgsConstructor
+@Builder(toBuilder = true)
+@Entity
+@Getter
 @NoArgsConstructor
+@Setter
+@Table(name = "categories", schema = "public")
+@ToString
 public class Category {
+    /**
+     * Уникальный идентификатор категории.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * Название категории.
+     */
+    @Column(name = "name", nullable = false)
     private String name;
 }

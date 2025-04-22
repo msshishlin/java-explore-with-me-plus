@@ -3,45 +3,61 @@ package ewm.user;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
-@Slf4j
-@Validated
-@RestController
-@RequiredArgsConstructor
+/**
+ * Контроллер для доступа к админской части API пользователей.
+ */
 @RequestMapping("/admin/users")
+@RequiredArgsConstructor
+@RestController
+@Validated
 public class AdminUserController {
+    /**
+     * Сервис для сущности "Пользователь".
+     */
     private final UserService userService;
 
+    /**
+     * Добавить нового пользователя.
+     *
+     * @param createUserDto трансферный объект, содержащий данные для добавления нового пользователя.
+     * @return новый пользователь.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody @Valid CreateUserDto createUserDto) {
-        log.debug("Вызван метод POST /admin/users с телом запроса {}", createUserDto);
-        UserDto userDto = userService.createUser(createUserDto);
-        log.debug("Метод POST /admin/users успешно выполнен");
-        return userDto;
+        return userService.createUser(createUserDto);
     }
 
+    /**
+     * Получить коллекцию пользователей.
+     *
+     * @param userIds коллекция идентификаторов пользователей, которых надо получить.
+     * @param from    количество пользователей, которое необходимо пропустить.
+     * @param size    количество пользователей, которое необходимо получить.
+     * @return коллекция пользователей.
+     */
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
-                                  @RequestParam(defaultValue = "0") @Min(0) int from,
-                                  @RequestParam(defaultValue = "10") @Min(1) int size) {
-        log.debug("Вызван метод GET /admin/users с параметрами ids: {}, from: {}, size: {}", ids, from, size);
-        List<UserDto> userDtos = userService.getUsers(ids, from, size);
-        log.debug("Метод GET /admin/users успешно выполнен");
-        return userDtos;
+    public Collection<UserDto> getUsers(@RequestParam(required = false) List<Long> userIds,
+                                        @RequestParam(defaultValue = "0") @Min(0) int from,
+                                        @RequestParam(defaultValue = "10") @Min(1) int size) {
+        return userService.getUsers(userIds, from, size);
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Удалить пользователя.
+     *
+     * @param userId идентификатор пользователя.
+     */
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long id) {
-        log.debug("Вызван метод DELETE /admin/users/{}", id);
-        userService.deleteUser(id);
-        log.debug("Метод DELETE /admin/users/{} успешно выполнен", id);
+    public void deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
     }
 }
