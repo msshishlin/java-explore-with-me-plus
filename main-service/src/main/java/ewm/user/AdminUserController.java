@@ -44,7 +44,7 @@ public class AdminUserController {
      * @return коллекция пользователей.
      */
     @GetMapping
-    public Collection<UserDto> getUsers(@RequestParam(required = false) List<Long> userIds,
+    public Collection<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> userIds,
                                         @RequestParam(defaultValue = "0") @Min(0) int from,
                                         @RequestParam(defaultValue = "10") @Min(1) int size) {
         return userService.getUsers(userIds, from, size);
