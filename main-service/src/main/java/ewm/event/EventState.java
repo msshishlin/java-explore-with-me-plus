@@ -15,6 +15,11 @@ public enum EventState {
     PUBLISHED,
 
     /**
+     * Отклонено.
+     */
+    REJECTED,
+
+    /**
      * Отменено.
      */
     CANCELED

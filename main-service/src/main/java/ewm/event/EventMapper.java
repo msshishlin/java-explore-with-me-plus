@@ -37,10 +37,26 @@ public interface EventMapper {
     EventDto toEventDto(Event event);
 
     /**
+     * Преобразовать объект события в трансферный объект, содержащий краткую информацию о событии.
+     *
+     * @param event объект события.
+     * @return трансферный объект, содержащий краткую информацию о событии.
+     */
+    EventShortDto toEventShortDto(Event event);
+
+    /**
      * Преобразовать коллекцию объектов событий в коллекцию трансферных объектов, содержащих информацию о событиях.
      *
      * @param events коллекция объектов события.
      * @return коллекция трансферных объектов, содержащих информацию о событиях.
      */
     Collection<EventDto> toEventDtoCollection(Collection<Event> events);
+
+    /**
+     * Преобразовать коллекцию объектов событий в коллекцию трансферных объектов, содержащих краткую информацию о событиях.
+     *
+     * @param events коллекция объектов события.
+     * @return коллекция трансферных объектов, содержащих краткую информацию о событиях.
+     */
+    Collection<EventShortDto> toEventShortDtoCollection(Collection<Event> events);
 }
