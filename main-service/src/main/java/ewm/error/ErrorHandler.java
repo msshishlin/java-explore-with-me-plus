@@ -1,8 +1,6 @@
 package ewm.error;
 
-import ewm.exception.ForbiddenException;
-import ewm.exception.NotFoundException;
-import ewm.exception.UnknownIpException;
+import ewm.exception.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
@@ -26,6 +24,26 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleConstraintViolation(final ConstraintViolationException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Incorrectly made request.")
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleCreateEntityException(final CreateEntityException ex) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Incorrectly made request.")
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleUpdateEntityException(final UpdateEntityException ex) {
         return ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST.name())
                 .reason("Incorrectly made request.")

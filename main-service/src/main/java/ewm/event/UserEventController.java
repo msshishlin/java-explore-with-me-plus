@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class UserEventController {
      * @return трансферный объект, содержащий данные о событии.
      */
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EventDto createEvent(@PathVariable @Positive Long userId,
                                 @RequestBody @Valid CreateEventDto createEventDto) {
         return eventService.createEvent(userId, createEventDto);
@@ -44,9 +46,9 @@ public class UserEventController {
      * @return трансферный объект, содержащий данные о событии.
      */
     @GetMapping
-    public Collection<EventDto> getEventById(@PathVariable @Positive Long userId,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                             @RequestParam(defaultValue = "10") @Positive int size) {
+    public Collection<EventDto> getEvents(@PathVariable @Positive Long userId,
+                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                          @RequestParam(defaultValue = "10") @Positive int size) {
         return eventService.getEvents(userId, from, size);
     }
 
@@ -61,5 +63,20 @@ public class UserEventController {
     public EventDto getEventById(@PathVariable Long userId,
                                  @PathVariable @Positive Long eventId) {
         return eventService.getEventById(userId, eventId);
+    }
+
+    /**
+     * Обновить событие.
+     *
+     * @param userId         идентификатор пользователя.
+     * @param eventId        идентификатор события.
+     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
+     * @return трансферный объект, содержащий данные о событии.
+     */
+    @PatchMapping("/{eventId}")
+    public EventDto updateEvent(@PathVariable Long userId,
+                                @PathVariable @Positive Long eventId,
+                                @RequestBody @Valid UpdateEventDto updateEventDto) {
+        return eventService.updateEvent(userId, eventId, updateEventDto);
     }
 }

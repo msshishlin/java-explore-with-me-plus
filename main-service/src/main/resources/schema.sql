@@ -10,7 +10,7 @@ ALTER TABLE users DROP CONSTRAINT IF EXISTS users_name_check;
 ALTER TABLE users DROP CONSTRAINT IF EXISTS users_email_check;
 
 ALTER TABLE users ADD CONSTRAINT users_name_check CHECK (TRIM(name) <> '' AND LENGTH(TRIM(name)) >= 2);
-ALTER TABLE users ADD CONSTRAINT users_email_check CHECK (TRIM(email) <> '' AND LENGTH(TRIM(email)) >= 6 AND TRIM(email) LIKE '%_@__%.__%');
+ALTER TABLE users ADD CONSTRAINT users_email_check CHECK (TRIM(email) <> '' AND LENGTH(TRIM(email)) >= 6 AND TRIM(email) LIKE '%_@_%._%');
 
 COMMENT ON TABLE users IS 'Содержит информацию о пользователях';
 COMMENT ON COLUMN users.id IS 'Уникальный идентификатор пользователя';

@@ -26,6 +26,22 @@ public interface EventService {
     Collection<EventDto> getEvents(Long userId, int from, int size);
 
     /**
+     * Получить коллекцию событий.
+     *
+     * @param search объект, содержащий параметры поиска событий.
+     * @return коллекция трансферных объектов, содержащий краткую информацию по событиям.
+     */
+    Collection<EventDto> getEvents(EventSearch search);
+
+    /**
+     * Получить коллекцию событий.
+     *
+     * @param search объект, содержащий параметры поиска событий.
+     * @return коллекция трансферных объектов, содержащий краткую информацию по событиям.
+     */
+    Collection<EventShortDto> getPublishedEvents(EventSearch search);
+
+    /**
      * Получить событие по его идентификатору.
      *
      * @param userId  идентификатор пользователя.
@@ -33,6 +49,14 @@ public interface EventService {
      * @return событие.
      */
     EventDto getEventById(Long userId, Long eventId);
+
+    /**
+     * Получить опубликованное событие по его идентификатору.
+     *
+     * @param eventId идентификатор события.
+     * @return трансферный объект, содержащий данные о событии.
+     */
+    EventDto getPublishedEventById(Long eventId);
 
     /**
      * Обновить событие.
@@ -43,4 +67,22 @@ public interface EventService {
      * @return трансферный объект, содержащий данные о событии.
      */
     EventDto updateEvent(Long userId, Long eventId, UpdateEventDto updateEventDto);
+
+    /**
+     * Обновить событие.
+     *
+     * @param eventId        идентификатор события.
+     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
+     * @return трансферный объект, содержащий данные о событии.
+     */
+    EventDto updateEvent(Long eventId, UpdateEventDto updateEventDto);
+
+    /**
+     * Обновить событие.
+     *
+     * @param event          событие.
+     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
+     * @return трансферный объект, содержащий данные о событии.
+     */
+    EventDto updateEvent(Event event, UpdateEventDto updateEventDto);
 }
