@@ -36,7 +36,7 @@ public class Event {
      * Инициатор события.
      */
     @JoinColumn(name = "initiator_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private User initiator;
 
@@ -68,7 +68,7 @@ public class Event {
      * Категория события.
      */
     @JoinColumn(name = "category_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Category category;
 
