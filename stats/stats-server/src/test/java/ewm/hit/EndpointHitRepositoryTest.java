@@ -32,7 +32,7 @@ public class EndpointHitRepositoryTest {
                 new EndpointStatDto("/test2", "/test2/test", 1L));
 
         Optional<List<EndpointStatDto>> statsOptional = Optional.of(
-                endpointHitRepository.getStats(start, end, false));
+                endpointHitRepository.findByTimestampBetween(start, end));
 
         assertThat(statsOptional)
                 .isPresent()
@@ -41,7 +41,7 @@ public class EndpointHitRepositoryTest {
                 .isEqualTo(stats);
 
         statsOptional = Optional.of(
-                endpointHitRepository.getStats(start, end, true));
+                endpointHitRepository.findByTimestampBetweenDistinctByUri(start, end));
 
         assertThat(statsOptional)
                 .isPresent()
@@ -65,7 +65,7 @@ public class EndpointHitRepositoryTest {
                 new EndpointStatDto("/test", "/test/test", 2L));
 
         Optional<List<EndpointStatDto>> statsOptional = Optional.of(
-                endpointHitRepository.getStatsWithUris(start, end, false, uris));
+                endpointHitRepository.findByTimestampBetweenAndUriIn(start, end, uris));
 
         assertThat(statsOptional)
                 .isPresent()
@@ -74,7 +74,7 @@ public class EndpointHitRepositoryTest {
                 .isEqualTo(statsWithUris);
 
         statsOptional = Optional.of(
-                endpointHitRepository.getStatsWithUris(start, end, true, uris));
+                endpointHitRepository.findByTimestampBetweenAndUriInDistinctByUri(start, end, uris));
 
         assertThat(statsOptional)
                 .isPresent()
