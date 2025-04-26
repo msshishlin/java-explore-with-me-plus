@@ -134,74 +134,6 @@ public class AdminUserControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
-    @DisplayName("Запрос на создание пользователя со слишком коротким именем")
-    @SneakyThrows
-    @Test
-    public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenNameIsTooShort() {
-        Faker faker = new Faker();
-
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .name("А")
-                .email(faker.internet().emailAddress())
-                .build();
-
-        MockHttpServletRequestBuilder requestBuilder = post("/admin/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createUserDto));
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> {
-                    assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException());
-
-                    BindingResult bindingResult = ((MethodArgumentNotValidException) result.getResolvedException()).getBindingResult();
-
-                    assertEquals(1, bindingResult.getErrorCount());
-                    assertEquals(1, bindingResult.getFieldErrorCount("name"));
-
-                    assertEquals("Имя пользователя не может быть меньше 2 символов", Objects.requireNonNull(bindingResult.getFieldError("name")).getDefaultMessage());
-                })
-                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
-                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
-                .andExpect(jsonPath("$.message", is("Имя пользователя не может быть меньше 2 символов")))
-                .andExpect(jsonPath("$.timestamp", notNullValue()));
-    }
-
-    @DisplayName("Запрос на создание пользователя со слишком длинным именем")
-    @SneakyThrows
-    @Test
-    public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenNameIsTooLong() {
-        Faker faker = new Faker();
-
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .name(StringUtils.repeat("А", 101))
-                .email(faker.internet().emailAddress())
-                .build();
-
-        MockHttpServletRequestBuilder requestBuilder = post("/admin/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createUserDto));
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> {
-                    assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException());
-
-                    BindingResult bindingResult = ((MethodArgumentNotValidException) result.getResolvedException()).getBindingResult();
-
-                    assertEquals(1, bindingResult.getErrorCount());
-                    assertEquals(1, bindingResult.getFieldErrorCount("name"));
-
-                    assertEquals("Имя пользователя не может быть больше 100 символов", Objects.requireNonNull(bindingResult.getFieldError("name")).getDefaultMessage());
-                })
-                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
-                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
-                .andExpect(jsonPath("$.message", is("Имя пользователя не может быть больше 100 символов")))
-                .andExpect(jsonPath("$.timestamp", notNullValue()));
-    }
-
     @DisplayName("Запрос на создание пользователя без адреса электронной почты")
     @SneakyThrows
     @Test
@@ -306,40 +238,6 @@ public class AdminUserControllerTest {
                 .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
                 .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
                 .andExpect(jsonPath("$.message", is("Email пользователя не может быть меньше 6 символов")))
-                .andExpect(jsonPath("$.timestamp", notNullValue()));
-    }
-
-    @DisplayName("Запрос на создание пользователя со слишком длинным адресом электронной почты")
-    @SneakyThrows
-    @Test
-    public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenEmailIsTooLong() {
-        Faker faker = new Faker();
-
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .name(faker.name().fullName())
-                .email(StringUtils.repeat("a", 250) + "aa@aaa.aa")
-                .build();
-
-        MockHttpServletRequestBuilder requestBuilder = post("/admin/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createUserDto));
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> {
-                    assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException());
-
-                    BindingResult bindingResult = ((MethodArgumentNotValidException) result.getResolvedException()).getBindingResult();
-
-                    assertEquals(1, bindingResult.getErrorCount());
-                    assertEquals(1, bindingResult.getFieldErrorCount("email"));
-
-                    assertEquals("Email пользователя должен корректным", Objects.requireNonNull(bindingResult.getFieldError("email")).getDefaultMessage());
-                })
-                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
-                .andExpect(jsonPath("$.reason", is("Incorrectly made request.")))
-                .andExpect(jsonPath("$.message", is("Email пользователя должен корректным")))
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 

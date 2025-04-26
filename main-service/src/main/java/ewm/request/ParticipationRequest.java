@@ -1,7 +1,6 @@
 package ewm.request;
 
 import ewm.event.Event;
-import ewm.event.EventStateConverter;
 import ewm.user.User;
 import jakarta.persistence.*;
 import lombok.*;
