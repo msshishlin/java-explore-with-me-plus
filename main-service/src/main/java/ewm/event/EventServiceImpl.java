@@ -201,7 +201,7 @@ public class EventServiceImpl implements EventService {
      * @param updateEventDto трансферный объект, содержащий данные для обновления события.
      * @return трансферный объект, содержащий данные о событии.
      */
-    public EventDto updateEvent(Long userId, Long eventId, UpdateEventDto updateEventDto) {
+    public EventDto updateEventByUser(Long userId, Long eventId, UpdateEventDto updateEventDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(String.format("Событие с id = %d не найдено", eventId)));
 
@@ -211,33 +211,6 @@ public class EventServiceImpl implements EventService {
 
         if (event.getState().equals(EventState.PUBLISHED)) {
             throw new ForbiddenException(String.format("Событие с id = %d запрещено для редактирования", eventId));
-        }
-
-        return updateEvent(event, updateEventDto);
-    }
-
-    /**
-     * Обновить событие.
-     *
-     * @param eventId        идентификатор события.
-     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
-     * @return трансферный объект, содержащий данные о событии.
-     */
-    public EventDto updateEvent(Long eventId, UpdateEventDto updateEventDto) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(String.format("Событие с id = %d не найдено", eventId)));
-        return updateEvent(event, updateEventDto);
-    }
-
-    /**
-     * Обновить событие.
-     *
-     * @param event          событие.
-     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
-     * @return трансферный объект, содержащий данные о событии.
-     */
-    public EventDto updateEvent(Event event, UpdateEventDto updateEventDto) {
-        if (event.getState().equals(EventState.PUBLISHED)) {
-            throw new ForbiddenException(String.format("Событие с id = %d запрещено для редактирования", event.getId()));
         }
 
         if (updateEventDto.getTitle() != null) {
@@ -281,17 +254,75 @@ public class EventServiceImpl implements EventService {
         }
 
         if (updateEventDto.getStateAction() != null) {
+            if (event.getState() == EventState.PUBLISHED) {
+                throw new ForbiddenException("Only pending or canceled events can be changed");
+            }
+
             if (updateEventDto.getStateAction() == EventStateAction.SEND_TO_REVIEW) {
-                if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
-                    throw new ForbiddenException("Only pending or canceled events can be changed");
-                }
                 event.setState(EventState.PENDING);
             } else if (updateEventDto.getStateAction() == EventStateAction.CANCEL_REVIEW) {
-                if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
-                    throw new ForbiddenException("Only pending or canceled events can be changed");
-                }
                 event.setState(EventState.CANCELED);
-            } else if (updateEventDto.getStateAction() == EventStateAction.PUBLISH_EVENT) {
+            }
+        }
+
+        return EventMapper.INSTANCE.toEventDto(eventRepository.save(event));
+    }
+
+    /**
+     * Обновить событие.
+     *
+     * @param eventId        идентификатор события.
+     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
+     * @return трансферный объект, содержащий данные о событии.
+     */
+    public EventDto updateEventByAdmin(Long eventId, UpdateEventDto updateEventDto) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(String.format("Событие с id = %d не найдено", eventId)));
+        if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new ForbiddenException("Нельзя редактировать событие, до наступления которого осталось меньше часа");
+        }
+
+        if (updateEventDto.getTitle() != null) {
+            event.setTitle(updateEventDto.getTitle());
+        }
+
+        if (updateEventDto.getAnnotation() != null) {
+            event.setAnnotation(updateEventDto.getAnnotation());
+        }
+
+        if (updateEventDto.getDescription() != null) {
+            event.setDescription(updateEventDto.getDescription());
+        }
+
+        if (updateEventDto.getEventDate() != null) {
+            if (updateEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+                throw new UpdateEntityException("Дата и время события должна быть больше текущих даты и времени не менее, чем на 2 часа");
+            }
+            event.setEventDate(updateEventDto.getEventDate());
+        }
+
+        if (updateEventDto.getCategory() != null) {
+            Category category = categoryRepository.findById(updateEventDto.getCategory()).orElseThrow(() -> new NotFoundException(String.format("Категория с id = %d не найдена", updateEventDto.getCategory())));
+            event.setCategory(category);
+        }
+
+        if (updateEventDto.getLocation() != null) {
+            event.setLocation(updateEventDto.getLocation());
+        }
+
+        if (updateEventDto.getPaid() != null) {
+            event.setPaid(updateEventDto.getPaid());
+        }
+
+        if (updateEventDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(updateEventDto.getParticipantLimit());
+        }
+
+        if (updateEventDto.getRequestModeration() != null) {
+            event.setRequestModeration(updateEventDto.getRequestModeration());
+        }
+
+        if (updateEventDto.getStateAction() != null) {
+            if (updateEventDto.getStateAction() == EventStateAction.PUBLISH_EVENT) {
                 if (event.getState() != EventState.PENDING) {
                     throw new ForbiddenException("Cannot publish the event because it's not in the right state: PENDING");
                 }

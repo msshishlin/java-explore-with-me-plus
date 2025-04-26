@@ -117,10 +117,4 @@ public class Event {
     @Column(name = "state")
     @Convert(converter = EventStateConverter.class)
     private EventState state;
-
-    /**
-     * Количество просмотров события.
-     */
-    @Column(name = "views")
-    private int views;
 }

@@ -66,7 +66,7 @@ public interface EventService {
      * @param updateEventDto трансферный объект, содержащий данные для обновления события.
      * @return трансферный объект, содержащий данные о событии.
      */
-    EventDto updateEvent(Long userId, Long eventId, UpdateEventDto updateEventDto);
+    EventDto updateEventByUser(Long userId, Long eventId, UpdateEventDto updateEventDto);
 
     /**
      * Обновить событие.
@@ -75,14 +75,5 @@ public interface EventService {
      * @param updateEventDto трансферный объект, содержащий данные для обновления события.
      * @return трансферный объект, содержащий данные о событии.
      */
-    EventDto updateEvent(Long eventId, UpdateEventDto updateEventDto);
-
-    /**
-     * Обновить событие.
-     *
-     * @param event          событие.
-     * @param updateEventDto трансферный объект, содержащий данные для обновления события.
-     * @return трансферный объект, содержащий данные о событии.
-     */
-    EventDto updateEvent(Event event, UpdateEventDto updateEventDto);
+    EventDto updateEventByAdmin(Long eventId, UpdateEventDto updateEventDto);
 }

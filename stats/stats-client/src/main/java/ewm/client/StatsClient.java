@@ -2,10 +2,11 @@ package ewm.client;
 
 import ewm.CreateEndpointHitDto;
 import ewm.EndpointStatDto;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,28 +14,27 @@ import java.util.List;
 
 @Service
 public class StatsClient {
-    private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:9090").build();
+    private final RestClient restClient = RestClient.builder().baseUrl("http://localhost:9090").build();
 
-    public Mono<ResponseEntity<Void>> sendHit(CreateEndpointHitDto createEndpointHitDto) {
-        return webClient.post()
+    public ResponseEntity<Void> sendHit(CreateEndpointHitDto createEndpointHitDto) {
+        return restClient.post()
                 .uri("/hit")
-                .bodyValue(createEndpointHitDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(createEndpointHitDto)
                 .retrieve()
                 .toEntity(Void.class);
     }
 
-    public Mono<ResponseEntity<List<EndpointStatDto>>> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        String strStart = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String strEnd = end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        return webClient.get()
+    public ResponseEntity<List<EndpointStatDto>> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+        return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/stats")
-                        .queryParam("start", strStart)
-                        .queryParam("end", strEnd)
+                        .queryParam("start", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .queryParam("end", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                         .queryParam("uris", uris)
                         .queryParam("unique", unique)
                         .build())
                 .retrieve()
-                .toEntityList(EndpointStatDto.class);
+                .toEntity(new ParameterizedTypeReference<>() {
+                });
     }
 }

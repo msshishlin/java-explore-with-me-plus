@@ -49,7 +49,7 @@ public class PublicEventController {
      */
     @GetMapping
     public Collection<EventShortDto> getEvents(@RequestParam(required = false) String text,
-                                               @RequestParam(required = false) Collection<Long> categories,
+                                               @RequestParam(required = false) Collection<@Positive Long> categories,
                                                @RequestParam(required = false) Boolean paid,
                                                @RequestParam(required = false) String rangeStart,
                                                @RequestParam(required = false) String rangeEnd,
@@ -74,7 +74,7 @@ public class PublicEventController {
             return eventService.getPublishedEvents(eventSearch);
         } finally {
             try {
-                statsClient.sendHit(new CreateEndpointHitDto("main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
+                statsClient.sendHit(new CreateEndpointHitDto("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
@@ -93,7 +93,7 @@ public class PublicEventController {
             return eventService.getPublishedEventById(eventId);
         } finally {
             try {
-                statsClient.sendHit(new CreateEndpointHitDto("main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
+                statsClient.sendHit(new CreateEndpointHitDto("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }

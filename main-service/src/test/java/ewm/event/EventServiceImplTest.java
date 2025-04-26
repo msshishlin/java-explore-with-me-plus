@@ -248,7 +248,7 @@ public class EventServiceImplTest {
                 .requestModeration(true)
                 .build();
 
-        EventDto eventDto = eventService.updateEvent(userDto.getId(), eventId, updateEventDto);
+        EventDto eventDto = eventService.updateEventByUser(userDto.getId(), eventId, updateEventDto);
 
         assertThat(eventDto, notNullValue());
         assertThat(eventDto.getId(), notNullValue());
