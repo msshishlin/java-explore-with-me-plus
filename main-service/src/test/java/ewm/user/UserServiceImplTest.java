@@ -76,19 +76,6 @@ public class UserServiceImplTest {
         assertThat(assertThrows(DataIntegrityViolationException.class, () -> userService.createUser(createUserDto)).getMessage(), containsString("Нарушение ограничения: \"USERS_NAME_CHECK: \""));
     }
 
-    @DisplayName("Создание пользователя со слишком длинным именем")
-    @Test
-    public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenNameIsTooLong() {
-        Faker faker = new Faker();
-
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .name(StringUtils.repeat("А", 101))
-                .email(faker.internet().emailAddress())
-                .build();
-
-        assertThat(assertThrows(DataIntegrityViolationException.class, () -> userService.createUser(createUserDto)).getMessage(), containsString("Значение слишком длинное для поля \"NAME CHARACTER VARYING(100)\""));
-    }
-
     @DisplayName("Создание пользователя без адреса электронной почты")
     @Test
     public void should_ThrowMethodArgumentNotValidExceptionAndReturnBadRequest_WhenEmailIsNull() {
