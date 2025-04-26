@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class StatsClient {
-    private final RestClient restClient = RestClient.builder().baseUrl("http://localhost:9090").build();
+    private final RestClient restClient = RestClient.builder().baseUrl("stats-server:9090").build();
 
     public ResponseEntity<Void> sendHit(CreateEndpointHitDto createEndpointHitDto) {
         return restClient.post()
