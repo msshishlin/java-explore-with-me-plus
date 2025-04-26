@@ -39,7 +39,7 @@ public interface EventMapper {
      * @param event объект события.
      * @return трансферный объект, содержащий данные о событии.
      */
-    @Mapping(target = "views", source = "id", qualifiedByName = "getEventViews")
+    //@Mapping(target = "views", source = "id", qualifiedByName = "getEventViews")
     EventDto toEventDto(Event event);
 
     /**
