@@ -39,7 +39,7 @@ public interface EventMapper {
      * @param event объект события.
      * @return трансферный объект, содержащий данные о событии.
      */
-    //@Mapping(target = "views", source = "id", qualifiedByName = "getEventViews")
+    @Mapping(target = "views", source = "id", qualifiedByName = "getEventViews")
     EventDto toEventDto(Event event);
 
     /**
@@ -74,6 +74,10 @@ public interface EventMapper {
         LocalDateTime start = LocalDateTime.of(2020, 5, 5, 0, 0, 0);
         LocalDateTime end = LocalDateTime.of(2035, 5, 5, 0, 0, 0);
 
-        return Objects.requireNonNull(statsClient.getStats(start, end, List.of("/events/" + eventId), true).getBody()).size();
+        try {
+            return Objects.requireNonNull(statsClient.getStats(start, end, List.of("/events/" + eventId), true).getBody()).size();
+        } catch (Throwable ex) {
+            return 0;
+        }
     }
 }

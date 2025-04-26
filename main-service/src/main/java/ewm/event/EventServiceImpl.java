@@ -62,11 +62,7 @@ public class EventServiceImpl implements EventService {
         event.setInitiator(user);
         event.setCategory(category);
 
-        Event event1 = eventRepository.save(event);
-
-        EventDto eventDto = EventMapper.INSTANCE.toEventDto(event1);
-
-        return eventDto; //return EventMapper.INSTANCE.toEventDto(eventRepository.save(event));
+        return EventMapper.INSTANCE.toEventDto(eventRepository.save(event));
     }
 
     /**
