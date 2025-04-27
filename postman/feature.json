@@ -21,7 +21,6 @@
 							"        const user = await api.addUser(rnd.getUser());\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        //event = await api.publishEvent(event.id);\r",
 							"\r",
 							"        pm.request.url.query.clear();\r",
 							"        pm.request.addQueryParams([\r",
