@@ -36,7 +36,7 @@
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set('response', comment);\r",
 							"\r",
-							"        pm.request.url.query.clear();\r",
+							"        //pm.request.url.query.clear();\r",
 							"        pm.request.addQueryParams([\r",
 							"            `userId=${user.id}`,\r",
 							"            `eventId=${event.id}`,\r",
