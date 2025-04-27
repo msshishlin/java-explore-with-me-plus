@@ -21,36 +21,13 @@
 							"        const user = await api.addUser(rnd.getUser());\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        //event = await api.publishEvent(event.id);\r",
-							"\r",
-							"        pm.request.url.query.clear();\r",
-							"        pm.request.addQueryParams([\r",
-							"            `users=${user.id}`,\r",
-							"            `categories=${category.id}`\r",
-							"        ]);\r",
-							"\r",
-							"        pm.collectionVariables.set('response', event);\r",
-							"        pm.collectionVariables.set('userId', user.id);\r",
-							"        pm.collectionVariables.set('eventId', event.id);\r",
-							"\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
-							"        pm.request.url.query.clear();\r",
+							"        event = await api.publishEvent(event.id);\r",
+							"        let comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
+							"        pm.request.removeQueryParams(['userId', 'eventId', 'from', 'size', 'sort']);\r",
+							"        pm.request.addQueryParams([`userId=` + user.id, 'eventId=' + event.id, 'from=0', 'size=10', 'sort=DESC']);\r",
 							"        pm.collectionVariables.set('response', comment);\r",
-							"\r",
-							"        //pm.request.url.query.clear();\r",
-							"        pm.request.addQueryParams([\r",
-							"            `userId=${user.id}`,\r",
-							"            `eventId=${event.id}`,\r",
-							"            'from=0',\r",
-							"            'size=10',\r",
-							"            'sort=DESC'\r",
-							"        ]);\r",
-							"\r",
-							"        //const commentResponse = await api.get(`/comments?userId=${user.id}&eventId=${event.id}&from=0&size=10&sort=DESC`);\r",
-							"        //pm.collectionVariables.set('commentResponse', commentResponse);\r",
-							"\r",
-							"    } catch (err) {\r",
-							"        console.error(err);\r",
+							"    } catch(err) {\r",
+							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 							"    }\r",
 							"};\r",
 							"\r",
@@ -64,7 +41,7 @@
 							"    } finally {\r",
 							"        clearInterval(interval);\r",
 							"    }\r",
-							"}, 100);\r",
+							"}, 1000);\r",
 							""
 						],
 						"type": "text/javascript",
@@ -81,21 +58,23 @@
 							"    pm.response.to.be.json;\r",
 							"});\r",
 							"\r",
-							"const source = pm.collectionVariables.get('response');  \r",
-							"const target = pm.response.json();                      \r",
-							"let founded;\r",
-							"\r",
-							"target.forEach(function(element) {\r",
-							"    if (element.id == source.id) founded = element;\r",
-							"});\r",
+							"const source = pm.collectionVariables.get('response');\r",
+							"const target = pm.response.json()[0];\r",
 							"\r",
 							"pm.test(\"Комментарий должен содержать все необходимые поля\", function () {\r",
-							"    pm.expect(target[0]).to.have.property('id');\r",
-							"    pm.expect(target[0]).to.have.property('user');\r",
-							"    pm.expect(target[0]).to.have.property('event');\r",
-							"    pm.expect(target[0]).to.have.property('text');\r",
-							"    pm.expect(target[0]).to.have.property('created');\r",
-							"    pm.expect(target[0]).to.have.property('updated');\r",
+							"    pm.expect(target).to.have.property('id');\r",
+							"    pm.expect(target).to.have.property('user');\r",
+							"    pm.expect(target).to.have.property('event');\r",
+							"    pm.expect(target).to.have.property('text');\r",
+							"    pm.expect(target).to.have.property('created');\r",
+							"    pm.expect(target).to.have.property('updated');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+							"    pm.expect(source.id).equal(target.id, 'ID комментария должен соответствовать');\r",
+							"    pm.expect(source.text).equal(target.text, 'Текст комментария должен соответствовать');\r",
+							"    pm.expect(source.user.id).equal(target.user.id, 'ID пользователя должен совпадать');\r",
+							"    pm.expect(source.event.id).equal(target.event.id, 'ID события должен совпадать');\r",
 							"});\r",
 							""
 						],
@@ -114,34 +93,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/comments?userId=1&eventId=5&from=0&size=10&sort=DESC",
+					"raw": "{{baseUrl}}/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"comments"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "1"
-						},
-						{
-							"key": "eventId",
-							"value": "5"
-						},
-						{
-							"key": "from",
-							"value": "0"
-						},
-						{
-							"key": "size",
-							"value": "10"
-						},
-						{
-							"key": "sort",
-							"value": "DESC"
-						}
 					]
 				}
 			},
@@ -716,8 +673,7 @@
 		},
 		{
 			"key": "response",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
 			"key": "uid",
