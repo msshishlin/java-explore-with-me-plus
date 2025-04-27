@@ -7,9 +7,9 @@ import lombok.Data;
 /**
  * Трансферный объект, содержащий статистику запросов.
  */
+@AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
-@AllArgsConstructor
 public class EndpointStatDto {
     /**
      * Идентификатор сервиса, в который был отправлен запрос.

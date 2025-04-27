@@ -29,6 +29,5 @@ public class CreateEndpointHitDto {
     /**
      * Дата и время, когда был совершен запрос в формате "yyyy-MM-dd HH:mm:ss".
      */
-    @NotBlank(message = "Дата и время, когда был совершен запрос, не может быть пустой")
     private final String timestamp;
 }

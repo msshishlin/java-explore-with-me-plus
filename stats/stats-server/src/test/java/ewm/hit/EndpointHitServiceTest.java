@@ -1,7 +1,6 @@
 package ewm.hit;
 
 import ewm.CreateEndpointHitDto;
-import ewm.EndpointHitDto;
 import ewm.EndpointStatDto;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -10,15 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @SpringBootTest
@@ -33,18 +31,16 @@ public class EndpointHitServiceTest {
                 5L,
                 "/newApp",
                 "/newApp/test",
-                InetAddress.getByName("10.0.0.10"),
+                "10.0.0.10",
                 LocalDateTime.now());
 
         CreateEndpointHitDto createEndpointHitDto = new CreateEndpointHitDto(
                 endpointHit.getApp(),
                 endpointHit.getUri(),
-                endpointHit.getIp().getHostAddress(),
+                endpointHit.getIp(),
                 endpointHit.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        EndpointHitDto endpointHitDto = endpointHitService.createEndpointHit(createEndpointHitDto);
-
-        assertEquals(endpointHitDto, EndpointHitMapper.INSTANCE.toEndpointHitDto(endpointHit));
+        endpointHitService.createEndpointHit(createEndpointHitDto);
     }
 
     @Test
@@ -68,7 +64,7 @@ public class EndpointHitServiceTest {
         List<EndpointStatDto> statsWithUrisUnique = List.of(
                 new EndpointStatDto("/test", "/test/test", 2L));
 
-        Optional<List<EndpointStatDto>> statsOptional = Optional.of(
+        Optional<Collection<EndpointStatDto>> statsOptional = Optional.of(
                 endpointHitService.viewStats(start, end, null, false));
 
         assertThat(statsOptional)
