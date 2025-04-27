@@ -21,6 +21,7 @@
 							"        const user = await api.addUser(rnd.getUser());\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+							"        //event = await api.publishEvent(event.id);\r",
 							"\r",
 							"        pm.request.url.query.clear();\r",
 							"        pm.request.addQueryParams([\r",
@@ -33,6 +34,7 @@
 							"        pm.collectionVariables.set('eventId', event.id);\r",
 							"\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
+							"        pm.request.url.query.clear();\r",
 							"        pm.collectionVariables.set('response', comment);\r",
 							"\r",
 							"        //pm.request.url.query.clear();\r",
@@ -821,6 +823,10 @@
 		},
 		{
 			"key": "updatedCommentText",
+			"value": ""
+		},
+		{
+			"key": "responseCom",
 			"value": ""
 		}
 	]
